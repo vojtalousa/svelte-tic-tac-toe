@@ -1,9 +1,20 @@
 <script>
     export let value
+
+    import triangle from '../../public/images/triangle.svg'
+    import circle from '../../public/images/circle.svg'
+    import pentagram from '../../public/images/pentagram.svg'
+    import cross from '../../public/images/cross.svg'
+    const lookup = {
+        1: triangle,
+        2: circle,
+        3: pentagram,
+        4: cross
+    }
 </script>
 
 <div on:click class="square">
-    {value}
+    {@html lookup[value] || ''}
 </div>
 
 <style lang="scss">

@@ -1,10 +1,9 @@
 <script>
     import Square from './components/Square.svelte';
     const squares = Array(25 * 25).fill('')
-	console.log(squares)
 	let nextRound = 1
+
     function clickSquare(index) {
-    	console.log(index, "clicked")
 		if (squares[index] === '') {
 			squares[index] = nextRound
 			if (nextRound >= 4) nextRound = 1
