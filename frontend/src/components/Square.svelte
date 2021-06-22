@@ -1,9 +1,9 @@
 <script>
-
+    export let value
 </script>
 
-<div class="square">
-
+<div on:click class="square">
+    {value}
 </div>
 
 <style lang="scss">
