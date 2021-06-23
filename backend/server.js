@@ -6,8 +6,14 @@ const port = process.env.PORT || 3000;
 const httpServer = http.createServer(app);
 const io = require("socket.io")(httpServer)
 
+const board = Array(25 * 25).fill('')
 io.on('connection', async (socket) => {
-    socket.on('place', ({index, piece}) => io.emit('place', {index, piece}))
+    socket.emit('starterinfo', board)
+
+    socket.on('place', ({index, piece}) => {
+        board[index] = piece
+        io.emit('place', {index, piece})
+    })
 })
 
 app.use(express.static(path.join(__dirname, '../frontend/public')));

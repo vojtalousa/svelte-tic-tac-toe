@@ -3,7 +3,7 @@
     import Cursor from "./components/Cursor.svelte";
     import checkWin from "./scripts/checkWin";
 
-    const squares = Array(25 * 25).fill('')
+    let squares = Array(25 * 25).fill('')
     let nextRound = 1
     let players = 0
 
@@ -29,6 +29,7 @@
     }
 
     socket.on('place', ({ index, piece }) => squares[index] = piece)
+    socket.on('starterinfo', (board) => squares = board)
 </script>
 
 <main>
