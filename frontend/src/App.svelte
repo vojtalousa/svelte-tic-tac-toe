@@ -4,8 +4,8 @@
     import checkWin from "./scripts/checkWin";
 
     let squares = Array(25 * 25).fill('')
-    let nextRound = 1
-    let players = 0
+    let thisPlayerNextRound = 1
+    let players = {}
 
     // split an array to equal chunks
     function chunkArray(myArray, chunkSize) {
@@ -18,9 +18,9 @@
 
     function clickSquare(index) {
         if (squares[index] === '') {
-            socket.emit('place', { index, piece: nextRound })
-            if (nextRound >= 4) nextRound = 1
-            else nextRound += 1
+            socket.emit('place', { index, piece: thisPlayerNextRound })
+            if (thisPlayerNextRound >= 4) thisPlayerNextRound = 1
+            else thisPlayerNextRound += 1
 
             const modifiedSquares = chunkArray(squares.slice(), 25) // convert squares to a 2d array
             const clickedSquare = {x: index % 25, y: Math.floor(index / 25)} // convert the index to a x,y coordinate
@@ -30,6 +30,18 @@
 
     socket.on('place', ({ index, piece }) => squares[index] = piece)
     socket.on('starterinfo', (board) => squares = board)
+    socket.on('move', ({position, id}) => {
+        players[id] = {...players[id], position}
+        players = players
+    })
+    let timeout = false
+    window.addEventListener('mousemove', event => {
+      if (!timeout) {
+          timeout = true
+          socket.emit('move', {x: event.clientX, y: event.clientY})
+          setTimeout(() => timeout = false, 20)
+      }
+    })
 </script>
 
 <main>
@@ -40,7 +52,9 @@
         {/each}
     </div>
     <div id="cursors">
-        <Cursor value={nextRound}/>
+        {#each Object.keys(players) as id}
+            <Cursor position={players[id].position} nextRound={players[id].nextRound}/>
+        {/each}
     </div>
 </main>
 

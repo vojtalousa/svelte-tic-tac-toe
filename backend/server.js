@@ -14,6 +14,7 @@ io.on('connection', async (socket) => {
         board[index] = piece
         io.emit('place', {index, piece})
     })
+    socket.on('move', (position) => io.emit('move', {position, id: socket.id}))
 })
 
 app.use(express.static(path.join(__dirname, '../frontend/public')));

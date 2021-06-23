@@ -1,6 +1,8 @@
 <script>
-    export let value
+    export let nextRound
+    export let position
 
+    import { afterUpdate } from 'svelte';
     import triangle from '../../public/images/triangle.svg';
     import circle from '../../public/images/circle.svg';
     import pentagram from '../../public/images/pentagram.svg';
@@ -14,14 +16,14 @@
     }
 
     let pointer
-    window.addEventListener('mousemove', (event) => {
-        pointer.style.left = `${event.clientX - 12.5}px`
-        pointer.style.top = `${event.clientY - 12.5}px`
+    afterUpdate(() => {
+        pointer.style.left = `${position.x - 12.5}px`
+        pointer.style.top = `${position.y - 12.5}px`
     })
 </script>
 
 <div bind:this={pointer} class="container">
-    {@html lookup[value] || ''}
+    {@html lookup[nextRound] || ''}
 </div>
 
 <style>
