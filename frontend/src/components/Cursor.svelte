@@ -15,7 +15,6 @@
 
     let pointer
     window.addEventListener('mousemove', (event) => {
-        console.log(pointer, event)
         pointer.style.left = `${event.clientX - 12.5}px`
         pointer.style.top = `${event.clientY - 12.5}px`
     })

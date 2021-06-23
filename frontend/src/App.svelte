@@ -5,6 +5,7 @@
 
     const squares = Array(25 * 25).fill('')
     let nextRound = 1
+    let players = 0
 
     // split an array to equal chunks
     function chunkArray(myArray, chunkSize) {
@@ -17,7 +18,7 @@
 
     function clickSquare(index) {
         if (squares[index] === '') {
-            squares[index] = nextRound
+            socket.emit('place', { index, piece: nextRound })
             if (nextRound >= 4) nextRound = 1
             else nextRound += 1
 
@@ -26,6 +27,8 @@
             if (checkWin(modifiedSquares, clickedSquare)) alert("You win!")
         }
     }
+
+    socket.on('place', ({ index, piece }) => squares[index] = piece)
 </script>
 
 <main>
