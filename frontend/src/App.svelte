@@ -1,13 +1,29 @@
 <script>
     import Square from './components/Square.svelte';
+    import checkWin from "./scripts/checkWin";
+
     const squares = Array(25 * 25).fill('')
 	let nextRound = 1
+
+    // split an array to equal chunks
+    function chunkArray(myArray, chunkSize) {
+        const results = [];
+        while (myArray.length) {
+            results.push(myArray.splice(0, chunkSize));
+        }
+        return results;
+    }
 
     function clickSquare(index) {
 		if (squares[index] === '') {
 			squares[index] = nextRound
 			if (nextRound >= 4) nextRound = 1
 			else nextRound += 1
+
+            const modifiedSquares = chunkArray(squares.slice(), 25) // convert squares to a 2d array
+            const clickedSquare = { x: index % 25, y: Math.floor(index / 25) } // convert the index to a x,y coordinate
+            console.log(modifiedSquares, clickedSquare)
+            if (checkWin(modifiedSquares, clickedSquare)) alert("You win!")
 		}
     }
 </script>
