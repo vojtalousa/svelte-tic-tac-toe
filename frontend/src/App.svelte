@@ -1,9 +1,10 @@
 <script>
     import Square from './components/Square.svelte';
+    import Cursor from "./components/Cursor.svelte";
     import checkWin from "./scripts/checkWin";
 
     const squares = Array(25 * 25).fill('')
-	let nextRound = 1
+    let nextRound = 1
 
     // split an array to equal chunks
     function chunkArray(myArray, chunkSize) {
@@ -15,16 +16,15 @@
     }
 
     function clickSquare(index) {
-		if (squares[index] === '') {
-			squares[index] = nextRound
-			if (nextRound >= 4) nextRound = 1
-			else nextRound += 1
+        if (squares[index] === '') {
+            squares[index] = nextRound
+            if (nextRound >= 4) nextRound = 1
+            else nextRound += 1
 
             const modifiedSquares = chunkArray(squares.slice(), 25) // convert squares to a 2d array
-            const clickedSquare = { x: index % 25, y: Math.floor(index / 25) } // convert the index to a x,y coordinate
-            console.log(modifiedSquares, clickedSquare)
+            const clickedSquare = {x: index % 25, y: Math.floor(index / 25)} // convert the index to a x,y coordinate
             if (checkWin(modifiedSquares, clickedSquare)) alert("You win!")
-		}
+        }
     }
 </script>
 
@@ -34,6 +34,9 @@
         {#each squares as value, index}
             <Square on:click={() => clickSquare(index)} {value}/>
         {/each}
+    </div>
+    <div id="cursors">
+        <Cursor value={nextRound}/>
     </div>
 </main>
 
