@@ -7,6 +7,7 @@
     let thisPlayerNextRound = 1
     let players = {}
     let cooldown = 0
+    let winLose
 
     // split an array to equal chunks
     function chunkArray(myArray, chunkSize) {
@@ -22,10 +23,6 @@
             let nextPiece = Math.floor(Math.random() * 4) + 1
             socket.emit('place', {index, nextPiece, piece: thisPlayerNextRound})
             thisPlayerNextRound = nextPiece
-
-            const modifiedSquares = chunkArray(squares.slice(), 25) // convert squares to a 2d array
-            const clickedSquare = {x: index % 25, y: Math.floor(index / 25)} // convert the index to a x,y coordinate
-            if (checkWin(modifiedSquares, clickedSquare)) alert("You win!")
         }
     }
 
@@ -34,6 +31,15 @@
             players[id].loading = 0
             players[id].nextRound = nextPiece
             squares[index] = piece
+
+            const modifiedSquares = chunkArray(squares.slice(), 25) // convert squares to a 2d array
+            const clickedSquare = {x: index % 25, y: Math.floor(index / 25)} // convert the index to a x,y coordinate
+            if (checkWin(modifiedSquares, clickedSquare) && id === socket.id) {
+                winLose = 'won'
+                socket.emit('win')
+                squares = Array(25 * 25).fill('')
+                setTimeout(() => winLose = null, 3000)
+            }
 
             // create the loading animation
             let loadingInterval = setInterval(() => {
@@ -53,6 +59,11 @@
     socket.on('move', ({position, id}) => {
         players[id] = {...players[id], position}
     })
+    socket.on('lost', () => {
+        winLose = 'lost'
+        squares = Array(25 * 25).fill('')
+        setTimeout(() => winLose = null, 3000)
+    })
 
     let timeout = false
     window.addEventListener('mousemove', event => {
@@ -68,13 +79,17 @@
 
 <main>
     <h1>TIC-TAC-TOE</h1>
+    <div class="winPopup" style={`visibility: ${(winLose ? 'visible' : 'hidden')}`}>
+        <div>
+            <h2>You {winLose}.</h2>
+        </div>
+    </div>
     <div id="board">
         {#each squares as value, index}
             <Square on:click={() => clickSquare(index)} {value}/>
         {/each}
     </div>
     <div id="cursors">
-        {JSON.stringify(players)}
         {#each Object.keys(players) as id}
             <Cursor position={players[id].position}
                     nextRound={players[id].nextRound}
@@ -83,7 +98,7 @@
     </div>
 </main>
 
-<style>
+<style lang="scss">
     main {
         display: flex;
         align-items: center;
@@ -101,5 +116,26 @@
         display: grid;
         grid-template-columns: repeat(25, 25px);
         grid-template-rows: repeat(25, 25px);
+    }
+
+    .winPopup {
+      z-index: 5;
+      position: absolute;
+      top: 0;
+      height: 100%;
+      width: 100%;
+      background-color: rgba(0, 0, 0, 0.8);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+        div {
+          background-color: white;
+          border-radius: 5px;
+          width: 150px;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          height: 70px;
+        }
     }
 </style>

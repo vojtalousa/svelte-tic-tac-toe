@@ -3,7 +3,7 @@ function checkRow(row) {
     // replace empty characters with the character e
     const rowWithoutSpaces = row.map(el => el === '' ? 'e' : el)
     const string = rowWithoutSpaces.join('');
-    return /([0-9])\1{3}/.test(string);
+    return /([0-9])\1{4}/.test(string);
 }
 
 export default (board, position) => {
