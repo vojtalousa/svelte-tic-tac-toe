@@ -6,6 +6,7 @@
     let squares = Array(25 * 25).fill('')
     let thisPlayerNextRound = 1
     let players = {}
+    let cooldown = 0
 
     // split an array to equal chunks
     function chunkArray(myArray, chunkSize) {
@@ -19,7 +20,7 @@
     function clickSquare(index) {
         if (squares[index] === '') {
             let nextPiece = Math.floor(Math.random() * 4) + 1
-            socket.emit('place', { index, nextPiece, piece: thisPlayerNextRound})
+            socket.emit('place', {index, nextPiece, piece: thisPlayerNextRound})
             thisPlayerNextRound = nextPiece
 
             const modifiedSquares = chunkArray(squares.slice(), 25) // convert squares to a 2d array
@@ -28,9 +29,20 @@
         }
     }
 
-    socket.on('place', ({ index, piece, nextPiece, id }) => {
-        players[id].nextRound = nextPiece
-        squares[index] = piece
+    socket.on('place', ({index, piece, nextPiece, id}) => {
+        if (players[id].loading >= 81.155) {
+            players[id].loading = 0
+            players[id].nextRound = nextPiece
+            squares[index] = piece
+
+            // create the loading animation
+            let loadingInterval = setInterval(() => {
+                players[id].loading += 81.155 / 100
+                if (players[id].loading >= 81.155) {
+                    clearInterval(loadingInterval)
+                }
+            }, 10)
+        }
     })
     socket.on('starterinfo', ({board, listOfPlayers}) => {
         console.log(listOfPlayers, board)
@@ -43,13 +55,13 @@
 
     let timeout = false
     window.addEventListener('mousemove', event => {
-      if (!timeout) {
-          timeout = true
-          socket.emit('move', {x: event.clientX, y: event.clientY})
+        if (!timeout) {
+            timeout = true
+            socket.emit('move', {x: event.clientX, y: event.clientY})
 
-          // only send the move update every 20ms
-          setTimeout(() => timeout = false, 20)
-      }
+            // only send the move update every 20ms
+            setTimeout(() => timeout = false, 20)
+        }
     })
 </script>
 
@@ -63,7 +75,7 @@
     <div id="cursors">
         {JSON.stringify(players)}
         {#each Object.keys(players) as id}
-            <Cursor position={players[id].position} nextRound={players[id].nextRound}/>
+            <Cursor position={players[id].position} nextRound={players[id].nextRound} loading={`${players[id].loading} 81.155`}/>
         {/each}
     </div>
 </main>

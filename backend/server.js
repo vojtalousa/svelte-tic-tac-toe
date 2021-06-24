@@ -9,7 +9,7 @@ const io = require("socket.io")(httpServer)
 const board = Array(25 * 25).fill('')
 const listOfPlayers = {}
 io.on('connection', async (socket) => {
-    listOfPlayers[socket.id] = {position: {x: 0, y: 0}, nextRound: 1}
+    listOfPlayers[socket.id] = {position: {x: 0, y: 0}, nextRound: 1, loading: 81.155}
     io.emit('starterinfo', {board, listOfPlayers})
 
     socket.on('place', ({index, piece, nextPiece}) => {
