@@ -18,9 +18,9 @@
 
     function clickSquare(index) {
         if (squares[index] === '') {
-            socket.emit('place', { index, piece: thisPlayerNextRound })
-            if (thisPlayerNextRound >= 4) thisPlayerNextRound = 1
-            else thisPlayerNextRound += 1
+            let nextPiece = Math.floor(Math.random() * 4) + 1
+            socket.emit('place', { index, nextPiece, piece: thisPlayerNextRound})
+            thisPlayerNextRound = nextPiece
 
             const modifiedSquares = chunkArray(squares.slice(), 25) // convert squares to a 2d array
             const clickedSquare = {x: index % 25, y: Math.floor(index / 25)} // convert the index to a x,y coordinate
@@ -28,17 +28,26 @@
         }
     }
 
-    socket.on('place', ({ index, piece }) => squares[index] = piece)
-    socket.on('starterinfo', (board) => squares = board)
+    socket.on('place', ({ index, piece, nextPiece, id }) => {
+        players[id].nextRound = nextPiece
+        squares[index] = piece
+    })
+    socket.on('starterinfo', ({board, listOfPlayers}) => {
+        console.log(listOfPlayers, board)
+        players = listOfPlayers
+        squares = board
+    })
     socket.on('move', ({position, id}) => {
         players[id] = {...players[id], position}
-        players = players
     })
+
     let timeout = false
     window.addEventListener('mousemove', event => {
       if (!timeout) {
           timeout = true
           socket.emit('move', {x: event.clientX, y: event.clientY})
+
+          // only send the move update every 20ms
           setTimeout(() => timeout = false, 20)
       }
     })
@@ -52,6 +61,7 @@
         {/each}
     </div>
     <div id="cursors">
+        {JSON.stringify(players)}
         {#each Object.keys(players) as id}
             <Cursor position={players[id].position} nextRound={players[id].nextRound}/>
         {/each}
