@@ -5,6 +5,7 @@
     import circle from '../../public/images/circle.svg'
     import pentagram from '../../public/images/pentagram.svg'
     import cross from '../../public/images/cross.svg'
+
     const lookup = {
         1: triangle,
         2: circle,
@@ -13,7 +14,7 @@
     }
 </script>
 
-<div on:click class="square">
+<div class="square" on:click>
     {@html lookup[value] || ''}
 </div>
 

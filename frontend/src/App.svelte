@@ -44,6 +44,7 @@
             }, 10)
         }
     })
+    // this is sent to the client when a player joins/leaves
     socket.on('starterinfo', ({board, listOfPlayers}) => {
         console.log(listOfPlayers, board)
         players = listOfPlayers
@@ -75,7 +76,9 @@
     <div id="cursors">
         {JSON.stringify(players)}
         {#each Object.keys(players) as id}
-            <Cursor position={players[id].position} nextRound={players[id].nextRound} loading={`${players[id].loading} 81.155`}/>
+            <Cursor position={players[id].position}
+                    nextRound={players[id].nextRound}
+                    loading={`${players[id].loading} 81.155`}/>
         {/each}
     </div>
 </main>

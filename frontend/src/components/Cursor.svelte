@@ -25,13 +25,14 @@
 </script>
 
 <div bind:this={pointer} class="container">
-
     <div class="piece">
         {@html lookup[nextRound] || ''}
     </div>
     <svg id="outline">
-        <circle bind:this={circleSVG} cx="14.5" cy="14.5" r="13" stroke="#ff3e00" stroke-width="2" fill="white"
-                stroke-dasharray={loading}/>
+        <circle bind:this={circleSVG} cx="14.5"
+                cy="14.5" fill="white" r="13"
+                stroke="#ff3e00" stroke-dasharray={loading}
+                stroke-width="2"/>
     </svg>
 </div>
 
