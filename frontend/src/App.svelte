@@ -57,7 +57,7 @@
         squares = board
     })
     socket.on('move', ({position, id}) => {
-        players[id] = {...players[id], position}
+        if (id !== socket.id) players[id] = {...players[id], position}
     })
     socket.on('lost', () => {
         winLose = 'lost'
@@ -67,9 +67,11 @@
 
     let timeout = false
     window.addEventListener('mousemove', event => {
+        const position = {x: event.clientX, y: event.clientY}
+        players[socket.id] = {...players[socket.id], position}
         if (!timeout) {
             timeout = true
-            socket.emit('move', {x: event.clientX, y: event.clientY})
+            socket.emit('move', position)
 
             // only send the move update every 20ms
             setTimeout(() => timeout = false, 20)
