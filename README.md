@@ -2,6 +2,8 @@
 
 Multiplayer tic-tac-toe on a 25*25 board with 4 pieces instead of just 2 and everyone plays at the same time. Chaos? Yes.
 
+Live Preview: <https://svelte-tic-tac-toe.vojtechlousa.repl.co>
+
 ![](./intro.png)
 ---
 
@@ -16,7 +18,7 @@ cd frontend
 npm i 
 ```
 
-Start in dev mode with 
+Start in dev mode with
 ```bash
 npm run dev
 ```
@@ -29,7 +31,10 @@ npm run start
 ```
 
 ## Notes
-This project started as a simple test of Svelte, but I kept adding new things to it and it grew this. I have however loved working with Svelte and I'll definitely create new projects with it in the future. I can confidently say that Svelte is now my favourite framework.  
+
+This project started as a simple test of Svelte, but I kept adding new things to it and it grew this. I have however
+loved working with Svelte and I'll definitely create new projects with it in the future. I can confidently say that
+Svelte is now my favourite framework.
 
 ## Ideas for the future
 * Add mobile support
